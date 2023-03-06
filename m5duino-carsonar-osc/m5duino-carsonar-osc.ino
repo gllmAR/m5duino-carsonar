@@ -25,7 +25,7 @@ EthernetUDP udp;
 #define MOSI 33
 #define CS 19
 
-IPAddress sendIp(192, 168, 18, 255);
+IPAddress sendIp(127, 0, 0, 1); //changed in setup() 
 unsigned int sendPort = SENDPORT;
 //Changer les derniers "chiffres de la mac addresse"
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xCF, 0xAE, ID };
@@ -78,12 +78,15 @@ void setup()
   // init DHCP
   Ethernet.begin(mac);
   udp.begin(8888);
+  sendIp=Ethernet.localIP(); //get ip
+  sendIp[3]=255; //set LST
   set_m5_led(PINK);  // IF here; ethernet initialize
    // Print init state
   Serial.print("carsonar ip => ");
   Serial.print(Ethernet.localIP());
   Serial.print(" broadcasting => ");
-  Serial.println(sendIp);
+  Serial.println(sendIp);  
+  oscUdp.setDestination(sendIp,SENDPORT);
 }
 
 void loop()
